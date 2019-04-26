@@ -1,28 +1,72 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+ // import Api from './api/Api'; 
+  import UsingForm from './UsingForm';
+  import UsingFetch from './UsingFetch'; 
+  //import New from './api/New'; 
+
 
 class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+    constructor(props){
+      super(props);
+      this.state = {
+        companyList:[],
+        uname: '',
+        id: ''
+    };
+   
+    }
+    
+    componentDidMount(){
+      fetch('https://jsonplaceholder.typicode.com/users')
+      .then(res => { return  res.json()})
+      .then(
+        res => {
+             this.setState({
+              companyList : res
+             });
+        },
+         (error) => {
+          console.log(error);
+        }
+        );
+      }
+
+      
+  
+
+  handleChangeValue = (e) => {
+    this.setState({
+           [e.target.name]: e.target.value,
+       });
   }
-}
+
+  handleSubmit = () => {
+    var newObj = {
+              'id' : this.state.id,
+              'name' : this.state.uname
+              }
+    var newlist = this.state.companyList;
+    newlist.push(newObj);
+    this.setState({
+      companyList:newlist
+    });
+ }
+
+      render() {
+        return (
+          <div className="App">
+            1) DataGrid
+            {/* { <Api onChange = {() => this.handleChange()} datasource = {this.state.datasource} /> }  */}
+            
+            <UsingForm onChangeValue = {this.handleChangeValue} handleSubmit = {this.handleSubmit}></UsingForm>
+            <UsingFetch datasource = {this.state.companyList}/>
+          </div>
+        );
+      }
+    }
+
+
+
+
 
 export default App;
